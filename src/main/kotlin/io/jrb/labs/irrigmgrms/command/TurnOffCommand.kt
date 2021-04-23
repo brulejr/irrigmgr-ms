@@ -28,11 +28,11 @@ import io.jrb.labs.irrigmgrms.model.CommandResponse
 import io.jrb.labs.irrigmgrms.model.Device
 import mu.KotlinLogging
 
-class TurnOffCommand(private val device: Device) : Command {
+class TurnOffCommand() : Command {
 
     private val log = KotlinLogging.logger {}
 
-    override fun run(): CommandResponse {
+    override fun run(device: Device): CommandResponse {
         log.info("Turning off - ${device.name}")
         return CommandResponse()
     }

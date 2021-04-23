@@ -54,8 +54,8 @@ class ScheduleConfig {
     fun scheduleA(): Schedule = Schedule(
         name = "ScheduleA",
         events = listOf(
-            ScheduleEvent(name = "ON", timestamp = timestamp(5), command = TurnOnCommand(relayA())),
-            ScheduleEvent(name = "OFF", timestamp = timestamp(10), command = TurnOffCommand(relayA()))
+            ScheduleEvent(name = "ON", timestamp = timestamp(5), command = TurnOnCommand(), device = relayA()),
+            ScheduleEvent(name = "OFF", timestamp = timestamp(10), command = TurnOffCommand(), device = relayA())
         )
     )
 
@@ -66,7 +66,8 @@ class ScheduleConfig {
             ScheduleEvent(
                 name = "MEASURE",
                 timestamp = timestamp(5),
-                command = MeasureCommand(sensor()),
+                command = MeasureCommand(),
+                device = sensor(),
                 scheduledDays = EnumSet.of(MONDAY, WEDNESDAY, FRIDAY)
             )
         )

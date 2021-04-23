@@ -23,11 +23,14 @@
  */
 package io.jrb.labs.irrigmgrms.service
 
+import io.jrb.labs.irrigmgrms.model.Command
+import io.jrb.labs.irrigmgrms.model.Device
 import io.jrb.labs.irrigmgrms.model.Schedule
 import io.jrb.labs.irrigmgrms.model.ScheduleEvent
 import mu.KotlinLogging
 import org.springframework.context.SmartLifecycle
 import org.springframework.scheduling.TaskScheduler
+import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
 import java.time.LocalDate
 import java.time.ZoneId
@@ -55,7 +58,10 @@ class SchedulingService(
                 val eventTime = calculateEventTime(event)
                 if (eventEnabled(schedule, event, eventTime)) {
                     log.info("Scheduling Event - $eventName for $eventTime")
-                    val scheduledTask = scheduler.schedule(event.command::run, eventTime.toInstant())
+                    val scheduledTask = scheduler.schedule(
+                        runCommand(event.command, event.device),
+                        eventTime.toInstant()
+                    )
                     jobsMap[eventName] = scheduledTask
                 } else {
                     log.info("Not Scheduling Event - $eventName")
@@ -63,6 +69,12 @@ class SchedulingService(
             }
         }
         running.set(true)
+    }
+
+    private fun runCommand(command: Command, device: Device): Runnable {
+        return Runnable {
+            command.run(device)
+        }
     }
 
     override fun stop() {
@@ -79,7 +91,9 @@ class SchedulingService(
         return running.get()
     }
 
+    @Scheduled(cron = "0 0 0 * * *")
     fun restart() {
+        log.info("Restarting SchedulingService")
         stop()
         start()
     }

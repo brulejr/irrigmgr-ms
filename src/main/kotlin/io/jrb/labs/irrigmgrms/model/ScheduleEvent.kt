@@ -31,5 +31,6 @@ data class ScheduleEvent(
     val name: String,
     val timestamp: LocalTime,
     val scheduledDays: EnumSet<DayOfWeek> = EnumSet.noneOf(DayOfWeek::class.java),
-    val command: Command
+    val command: Command,
+    val device: Device
 )

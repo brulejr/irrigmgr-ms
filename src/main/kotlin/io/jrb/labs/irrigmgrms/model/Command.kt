@@ -24,5 +24,5 @@
 package io.jrb.labs.irrigmgrms.model
 
 interface Command {
-    fun run(): CommandResponse
+    fun run(device: Device): CommandResponse
 }
