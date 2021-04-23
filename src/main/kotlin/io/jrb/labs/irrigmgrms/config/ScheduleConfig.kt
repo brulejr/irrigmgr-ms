@@ -23,25 +23,17 @@
  */
 package io.jrb.labs.irrigmgrms.config
 
-import io.jrb.labs.irrigmgrms.command.MeasureCommand
-import io.jrb.labs.irrigmgrms.command.TurnOffCommand
-import io.jrb.labs.irrigmgrms.command.TurnOnCommand
+import io.jrb.labs.irrigmgrms.datafill.IrrigationDatafill
 import io.jrb.labs.irrigmgrms.device.Relay
 import io.jrb.labs.irrigmgrms.device.Sensor
-import io.jrb.labs.irrigmgrms.model.Schedule
-import io.jrb.labs.irrigmgrms.model.ScheduleEvent
+import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.scheduling.annotation.EnableScheduling
-import java.time.LocalTime
-import java.util.EnumSet
-
-import java.time.DayOfWeek.MONDAY
-import java.time.DayOfWeek.FRIDAY
-import java.time.DayOfWeek.WEDNESDAY
 
 @Configuration
 @EnableScheduling
+@EnableConfigurationProperties(IrrigationDatafill::class)
 class ScheduleConfig {
 
     @Bean
@@ -52,42 +44,5 @@ class ScheduleConfig {
 
     @Bean
     fun sensor() = Sensor( "Sensor1")
-
-    @Bean
-    fun scheduleA(): Schedule = Schedule(
-        name = "ScheduleA",
-        events = listOf(
-            ScheduleEvent(
-                name = "ON",
-                timestamp = timestamp(5),
-                command = TurnOnCommand(),
-                devices = listOf(relayA(), relayB())
-            ),
-            ScheduleEvent(
-                name = "OFF",
-                timestamp = timestamp(10),
-                command = TurnOffCommand(),
-                devices = listOf(relayA(), relayB())
-            )
-        )
-    )
-
-    @Bean
-    fun scheduleB(): Schedule = Schedule(
-        name = "ScheduleB",
-        events = listOf(
-            ScheduleEvent(
-                name = "MEASURE",
-                timestamp = timestamp(5),
-                command = MeasureCommand(),
-                devices = listOf(sensor()),
-                scheduledDays = EnumSet.of(MONDAY, WEDNESDAY, FRIDAY)
-            )
-        )
-    )
-
-    private fun timestamp(seconds: Long): LocalTime {
-        return LocalTime.now().plusSeconds(seconds)
-    }
 
 }

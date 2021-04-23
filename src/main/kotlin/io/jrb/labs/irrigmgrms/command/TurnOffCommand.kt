@@ -27,7 +27,9 @@ import io.jrb.labs.irrigmgrms.model.Command
 import io.jrb.labs.irrigmgrms.model.CommandResponse
 import io.jrb.labs.irrigmgrms.model.Device
 import mu.KotlinLogging
+import org.springframework.stereotype.Component
 
+@Component
 class TurnOffCommand() : Command {
 
     private val log = KotlinLogging.logger {}

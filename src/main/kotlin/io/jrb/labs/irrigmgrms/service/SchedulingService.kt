@@ -23,6 +23,7 @@
  */
 package io.jrb.labs.irrigmgrms.service
 
+import io.jrb.labs.irrigmgrms.datafill.IrrigationDatafill
 import io.jrb.labs.irrigmgrms.model.Command
 import io.jrb.labs.irrigmgrms.model.Device
 import io.jrb.labs.irrigmgrms.model.Schedule
@@ -40,7 +41,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 
 @Service
 class SchedulingService(
-    private val schedules: List<Schedule>,
+    private val datafill: IrrigationDatafill,
     private val scheduler: TaskScheduler
 ) : SmartLifecycle {
 
@@ -52,7 +53,7 @@ class SchedulingService(
     override fun start() {
         log.info("Starting SchedulingService")
         jobsMap = mutableMapOf()
-        schedules.forEach { schedule ->
+        datafill.schedules.forEach { schedule ->
             schedule.events.forEach { event ->
                 val taskTime = calculateTaskTime(event)
                 event.devices.forEach { device ->

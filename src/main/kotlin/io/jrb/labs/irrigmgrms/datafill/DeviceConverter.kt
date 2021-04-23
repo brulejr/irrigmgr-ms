@@ -21,22 +21,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.jrb.labs.irrigmgrms.command
+package io.jrb.labs.irrigmgrms.datafill
 
-import io.jrb.labs.irrigmgrms.model.Command
-import io.jrb.labs.irrigmgrms.model.CommandResponse
 import io.jrb.labs.irrigmgrms.model.Device
-import mu.KotlinLogging
+import org.springframework.boot.context.properties.ConfigurationPropertiesBinding
+import org.springframework.context.ApplicationContext
+import org.springframework.core.convert.converter.Converter
 import org.springframework.stereotype.Component
 
 @Component
-class TurnOnCommand() : Command {
+@ConfigurationPropertiesBinding
+class DeviceConverter(
+    private val context: ApplicationContext
+) : Converter<String, Device> {
 
-    private val log = KotlinLogging.logger {}
-
-    override fun run(device: Device): CommandResponse {
-        log.info("Turning on - ${device.name}")
-        return CommandResponse()
+    override fun convert(source: String): Device? {
+        return context.getBean(source, Device::class.java)
     }
 
 }

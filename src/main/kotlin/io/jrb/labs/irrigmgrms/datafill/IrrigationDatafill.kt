@@ -21,22 +21,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.jrb.labs.irrigmgrms.command
+package io.jrb.labs.irrigmgrms.datafill
 
-import io.jrb.labs.irrigmgrms.model.Command
-import io.jrb.labs.irrigmgrms.model.CommandResponse
-import io.jrb.labs.irrigmgrms.model.Device
-import mu.KotlinLogging
-import org.springframework.stereotype.Component
+import io.jrb.labs.irrigmgrms.model.Schedule
+import org.springframework.boot.context.properties.ConfigurationProperties
+import org.springframework.boot.context.properties.ConstructorBinding
 
-@Component
-class TurnOnCommand() : Command {
+@ConstructorBinding
+@ConfigurationProperties(prefix = "irrigation")
+data class IrrigationDatafill(
+    val schedules: List<Schedule> = listOf()
+)
 
-    private val log = KotlinLogging.logger {}
-
-    override fun run(device: Device): CommandResponse {
-        log.info("Turning on - ${device.name}")
-        return CommandResponse()
-    }
-
-}
