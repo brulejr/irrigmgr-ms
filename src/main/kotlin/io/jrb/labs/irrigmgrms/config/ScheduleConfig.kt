@@ -48,14 +48,27 @@ class ScheduleConfig {
     fun relayA() = Relay("RelayA")
 
     @Bean
+    fun relayB() = Relay("RelayB")
+
+    @Bean
     fun sensor() = Sensor( "Sensor1")
 
     @Bean
     fun scheduleA(): Schedule = Schedule(
         name = "ScheduleA",
         events = listOf(
-            ScheduleEvent(name = "ON", timestamp = timestamp(5), command = TurnOnCommand(), device = relayA()),
-            ScheduleEvent(name = "OFF", timestamp = timestamp(10), command = TurnOffCommand(), device = relayA())
+            ScheduleEvent(
+                name = "ON",
+                timestamp = timestamp(5),
+                command = TurnOnCommand(),
+                devices = listOf(relayA(), relayB())
+            ),
+            ScheduleEvent(
+                name = "OFF",
+                timestamp = timestamp(10),
+                command = TurnOffCommand(),
+                devices = listOf(relayA(), relayB())
+            )
         )
     )
 
@@ -67,7 +80,7 @@ class ScheduleConfig {
                 name = "MEASURE",
                 timestamp = timestamp(5),
                 command = MeasureCommand(),
-                device = sensor(),
+                devices = listOf(sensor()),
                 scheduledDays = EnumSet.of(MONDAY, WEDNESDAY, FRIDAY)
             )
         )

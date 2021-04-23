@@ -54,33 +54,29 @@ class SchedulingService(
         jobsMap = mutableMapOf()
         schedules.forEach { schedule ->
             schedule.events.forEach { event ->
-                val eventName = "${schedule.name}::${event.name}"
-                val eventTime = calculateEventTime(event)
-                if (eventEnabled(schedule, event, eventTime)) {
-                    log.info("Scheduling Event - $eventName for $eventTime")
-                    val scheduledTask = scheduler.schedule(
-                        runCommand(event.command, event.device),
-                        eventTime.toInstant()
-                    )
-                    jobsMap[eventName] = scheduledTask
-                } else {
-                    log.info("Not Scheduling Event - $eventName")
+                val taskTime = calculateTaskTime(event)
+                event.devices.forEach { device ->
+                    val taskName = calculateTaskName(schedule, event, device)
+                    if (isEventEnabled(schedule, event, taskTime)) {
+                        log.info("Scheduling Task - $taskName for $taskTime")
+                        val scheduledTask = scheduler.schedule(
+                            runCommand(event.command, device),
+                            taskTime.toInstant()
+                        )
+                        jobsMap[taskName] = scheduledTask
+                    } else {
+                        log.info("Not Scheduling Task - $taskName")
+                    }
                 }
             }
         }
         running.set(true)
     }
 
-    private fun runCommand(command: Command, device: Device): Runnable {
-        return Runnable {
-            command.run(device)
-        }
-    }
-
     override fun stop() {
         log.info("Stopping SchedulingService")
-        jobsMap.forEach { (eventName, scheduledTask) ->
-            log.info("Cancelling - $eventName")
+        jobsMap.forEach { (taskName, scheduledTask) ->
+            log.info("Cancelling Task - $taskName")
             scheduledTask.cancel(true)
         }
         jobsMap.clear()
@@ -98,16 +94,26 @@ class SchedulingService(
         start()
     }
 
-    private fun calculateEventTime(event: ScheduleEvent): ZonedDateTime {
+    private fun calculateTaskName(schedule: Schedule, event: ScheduleEvent, device: Device): String {
+        return "${schedule.name}::${event.name}::${device.name}"
+    }
+
+    private fun calculateTaskTime(event: ScheduleEvent): ZonedDateTime {
         return event.timestamp.atDate(LocalDate.now()).atZone(ZoneId.systemDefault())
     }
 
-    private fun eventEnabled(schedule: Schedule, scheduleEvent: ScheduleEvent, eventTime: ZonedDateTime): Boolean {
+    private fun isEventEnabled(schedule: Schedule, scheduleEvent: ScheduleEvent, eventTime: ZonedDateTime): Boolean {
         return if (schedule.enabled) {
             val scheduledDays = scheduleEvent.scheduledDays
             scheduledDays.isEmpty() || scheduledDays.contains(eventTime.dayOfWeek)
         } else {
             true
+        }
+    }
+
+    private fun runCommand(command: Command, device: Device): Runnable {
+        return Runnable {
+            command.run(device)
         }
     }
 
