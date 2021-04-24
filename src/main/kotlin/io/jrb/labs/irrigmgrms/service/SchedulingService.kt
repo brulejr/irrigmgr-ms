@@ -34,6 +34,7 @@ import org.springframework.scheduling.TaskScheduler
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
 import java.time.LocalDate
+import java.time.LocalTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.util.concurrent.ScheduledFuture
@@ -100,7 +101,10 @@ class SchedulingService(
     }
 
     private fun calculateTaskTime(event: ScheduleEvent): ZonedDateTime {
-        return event.timestamp.atDate(LocalDate.now()).atZone(ZoneId.systemDefault())
+        val timestamp: LocalTime = event.timestamp
+        val now: LocalTime = LocalTime.now()
+        val date: LocalDate = if (now.isBefore(timestamp)) LocalDate.now() else LocalDate.now().plusDays(1)
+        return timestamp.atDate(date).atZone(ZoneId.systemDefault())
     }
 
     private fun isEventEnabled(schedule: Schedule, scheduleEvent: ScheduleEvent, eventTime: ZonedDateTime): Boolean {
