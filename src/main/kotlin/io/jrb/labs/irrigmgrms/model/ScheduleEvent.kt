@@ -29,8 +29,13 @@ import java.util.EnumSet
 
 data class ScheduleEvent(
     val name: String,
-    val timestamp: LocalTime,
+    val timestamp: LocalTime?,
+    val fixedRate: Long?,
     val scheduledDays: EnumSet<DayOfWeek> = EnumSet.noneOf(DayOfWeek::class.java),
     val command: Command,
     val devices: List<Device> = listOf()
-)
+) {
+
+    fun hasFixedRate(event: ScheduleEvent): Boolean = fixedRate !== null
+
+}

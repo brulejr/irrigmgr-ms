@@ -14,14 +14,14 @@ irrigation:
           devices:
             - relayA
             - relayB
-  #  - name: schedule_b
-  #    events:
-  #      - name: MEASURE
-  #        timestamp:
-  #        scheduledDays:
-  #          - MONDAY
-  #          - WEDNESDAY
-  #          - FRIDAY
-  #        command: measureCommand
-  #        devices:
-  #          - sensor
+    - name: schedule_b
+      events:
+        - name: MEASURE
+          fixedRate: 300000
+          scheduledDays:
+            - MONDAY
+            - WEDNESDAY
+            - FRIDAY
+          command: measureCommand
+          devices:
+            - sensor

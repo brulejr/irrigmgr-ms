@@ -56,19 +56,10 @@ class SchedulingService(
         jobsMap = mutableMapOf()
         datafill.schedules.forEach { schedule ->
             schedule.events.forEach { event ->
-                val taskTime = calculateTaskTime(event)
-                event.devices.forEach { device ->
-                    val taskName = calculateTaskName(schedule, event, device)
-                    if (isEventEnabled(schedule, event, taskTime)) {
-                        log.info("Scheduling Task - $taskName for $taskTime")
-                        val scheduledTask = scheduler.schedule(
-                            runCommand(event.command, device),
-                            taskTime.toInstant()
-                        )
-                        jobsMap[taskName] = scheduledTask
-                    } else {
-                        log.info("Not Scheduling Task - $taskName")
-                    }
+                if (event.hasFixedRate(event)) {
+                    scheduleFixedRateTasks(schedule, event)
+                } else {
+                    scheduleTasks(schedule, event)
                 }
             }
         }
@@ -101,7 +92,7 @@ class SchedulingService(
     }
 
     private fun calculateTaskTime(event: ScheduleEvent): ZonedDateTime {
-        val timestamp: LocalTime = event.timestamp
+        val timestamp: LocalTime = event.timestamp!!
         val now: LocalTime = LocalTime.now()
         val date: LocalDate = if (now.isBefore(timestamp)) LocalDate.now() else LocalDate.now().plusDays(1)
         return timestamp.atDate(date).atZone(ZoneId.systemDefault())
@@ -119,6 +110,36 @@ class SchedulingService(
     private fun runCommand(command: Command, device: Device): Runnable {
         return Runnable {
             command.run(device)
+        }
+    }
+
+    private fun scheduleTasks(schedule: Schedule, event: ScheduleEvent) {
+        val taskTime = calculateTaskTime(event)
+        event.devices.forEach { device ->
+            val taskName = calculateTaskName(schedule, event, device)
+            if (isEventEnabled(schedule, event, taskTime)) {
+                log.info("Scheduling Task - $taskName for $taskTime")
+                val scheduledTask = scheduler.schedule(
+                    runCommand(event.command, device),
+                    taskTime.toInstant()
+                )
+                jobsMap[taskName] = scheduledTask
+            } else {
+                log.info("Not Scheduling Task - $taskName")
+            }
+        }
+    }
+
+    private fun scheduleFixedRateTasks(schedule: Schedule, event: ScheduleEvent) {
+        val fixedRate: Long = event.fixedRate!!
+        event.devices.forEach { device ->
+            val taskName = calculateTaskName(schedule, event, device)
+            log.info("Scheduling Task - $taskName at $fixedRate rate")
+            val scheduledTask = scheduler.scheduleAtFixedRate(
+                runCommand(event.command, device),
+                fixedRate
+            )
+            jobsMap[taskName] = scheduledTask
         }
     }
 
