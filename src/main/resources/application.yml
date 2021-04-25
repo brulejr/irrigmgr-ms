@@ -1,5 +1,5 @@
 spring.application.name: irrigmgr-ms
-spring.profiles.active: local,schedules
+spring.profiles.active: scheduling,mqtt,local
 
 info:
   app.name: ${spring.application.name}

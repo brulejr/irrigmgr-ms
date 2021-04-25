@@ -23,7 +23,7 @@
  */
 package io.jrb.labs.irrigmgrms.service
 
-import io.jrb.labs.irrigmgrms.datafill.IrrigationDatafill
+import io.jrb.labs.irrigmgrms.datafill.SchedulingDatafill
 import io.jrb.labs.irrigmgrms.model.Command
 import io.jrb.labs.irrigmgrms.model.Device
 import io.jrb.labs.irrigmgrms.model.Schedule
@@ -32,7 +32,6 @@ import mu.KotlinLogging
 import org.springframework.context.SmartLifecycle
 import org.springframework.scheduling.TaskScheduler
 import org.springframework.scheduling.annotation.Scheduled
-import org.springframework.stereotype.Service
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.ZoneId
@@ -40,9 +39,8 @@ import java.time.ZonedDateTime
 import java.util.concurrent.ScheduledFuture
 import java.util.concurrent.atomic.AtomicBoolean
 
-@Service
 class SchedulingService(
-    private val datafill: IrrigationDatafill,
+    private val datafill: SchedulingDatafill,
     private val scheduler: TaskScheduler
 ) : SmartLifecycle {
 

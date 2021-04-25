@@ -21,28 +21,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.jrb.labs.irrigmgrms.config
+package io.jrb.labs.irrigmgrms.datafill.converter
 
-import io.jrb.labs.irrigmgrms.datafill.IrrigationDatafill
-import io.jrb.labs.irrigmgrms.device.Relay
-import io.jrb.labs.irrigmgrms.device.Sensor
-import org.springframework.boot.context.properties.EnableConfigurationProperties
-import org.springframework.context.annotation.Bean
-import org.springframework.context.annotation.Configuration
-import org.springframework.scheduling.annotation.EnableScheduling
+import io.jrb.labs.irrigmgrms.model.Device
+import org.springframework.boot.context.properties.ConfigurationPropertiesBinding
+import org.springframework.context.ApplicationContext
+import org.springframework.core.convert.converter.Converter
+import org.springframework.stereotype.Component
 
-@Configuration
-@EnableScheduling
-@EnableConfigurationProperties(IrrigationDatafill::class)
-class ScheduleConfig {
+@Component
+@ConfigurationPropertiesBinding
+class DeviceConverter(
+    private val context: ApplicationContext
+) : Converter<String, Device> {
 
-    @Bean
-    fun relayA() = Relay("RelayA")
-
-    @Bean
-    fun relayB() = Relay("RelayB")
-
-    @Bean
-    fun sensor() = Sensor( "Sensor1")
+    override fun convert(source: String): Device? {
+        return context.getBean(source, Device::class.java)
+    }
 
 }

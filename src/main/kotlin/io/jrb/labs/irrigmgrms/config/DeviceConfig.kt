@@ -21,22 +21,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.jrb.labs.irrigmgrms.datafill
+package io.jrb.labs.irrigmgrms.config
 
-import io.jrb.labs.irrigmgrms.model.Command
-import org.springframework.boot.context.properties.ConfigurationPropertiesBinding
-import org.springframework.context.ApplicationContext
-import org.springframework.core.convert.converter.Converter
-import org.springframework.stereotype.Component
+import io.jrb.labs.irrigmgrms.device.Relay
+import io.jrb.labs.irrigmgrms.device.Sensor
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
 
-@Component
-@ConfigurationPropertiesBinding
-class CommandConverter(
-    private val context: ApplicationContext
-) : Converter<String, Command> {
+@Configuration
+class DeviceConfig {
 
-    override fun convert(source: String): Command? {
-        return context.getBean(source, Command::class.java)
-    }
+    @Bean
+    fun relayA() = Relay("RelayA")
+
+    @Bean
+    fun relayB() = Relay("RelayB")
+
+    @Bean
+    fun sensor() = Sensor( "Sensor1")
 
 }

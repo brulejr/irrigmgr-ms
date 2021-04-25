@@ -1,4 +1,4 @@
-irrigation:
+scheduling:
   schedules:
     - name: schedule_a
       events:

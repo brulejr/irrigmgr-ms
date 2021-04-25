@@ -21,15 +21,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.jrb.labs.irrigmgrms.datafill
+package io.jrb.labs.irrigmgrms.datafill.converter
 
-import io.jrb.labs.irrigmgrms.model.Schedule
-import org.springframework.boot.context.properties.ConfigurationProperties
-import org.springframework.boot.context.properties.ConstructorBinding
+import org.springframework.boot.context.properties.ConfigurationPropertiesBinding
+import org.springframework.core.convert.converter.Converter
+import org.springframework.stereotype.Component
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
 
-@ConstructorBinding
-@ConfigurationProperties(prefix = "irrigation")
-data class IrrigationDatafill(
-    val schedules: List<Schedule> = listOf()
-)
+@Component
+@ConfigurationPropertiesBinding
+class LocalTimeConverter : Converter<String, LocalTime> {
 
+    override fun convert(source: String): LocalTime? {
+        return LocalTime.parse(source, DateTimeFormatter.ofPattern("HH:mm:ss"));
+    }
+
+}

@@ -23,18 +23,13 @@
  */
 package io.jrb.labs.irrigmgrms.datafill
 
-import org.springframework.boot.context.properties.ConfigurationPropertiesBinding
-import org.springframework.core.convert.converter.Converter
-import org.springframework.stereotype.Component
-import java.time.LocalTime
-import java.time.format.DateTimeFormatter
+import io.jrb.labs.irrigmgrms.model.Schedule
+import org.springframework.boot.context.properties.ConfigurationProperties
+import org.springframework.boot.context.properties.ConstructorBinding
 
-@Component
-@ConfigurationPropertiesBinding
-class LocalTimeConverter : Converter<String, LocalTime> {
+@ConstructorBinding
+@ConfigurationProperties(prefix = "scheduling")
+data class SchedulingDatafill(
+    val schedules: List<Schedule> = listOf()
+)
 
-    override fun convert(source: String): LocalTime? {
-        return LocalTime.parse(source, DateTimeFormatter.ofPattern("HH:mm:ss"));
-    }
-
-}

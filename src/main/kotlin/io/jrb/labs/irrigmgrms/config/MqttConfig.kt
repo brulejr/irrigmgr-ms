@@ -21,22 +21,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.jrb.labs.irrigmgrms.datafill
+package io.jrb.labs.irrigmgrms.config
 
-import io.jrb.labs.irrigmgrms.model.Device
-import org.springframework.boot.context.properties.ConfigurationPropertiesBinding
-import org.springframework.context.ApplicationContext
-import org.springframework.core.convert.converter.Converter
-import org.springframework.stereotype.Component
+import io.jrb.labs.irrigmgrms.datafill.MqttDatafill
+import io.jrb.labs.irrigmgrms.mqtt.MqttBroker
+import io.jrb.labs.irrigmgrms.mqtt.MqttClient
+import org.springframework.boot.context.properties.EnableConfigurationProperties
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Profile
 
-@Component
-@ConfigurationPropertiesBinding
-class DeviceConverter(
-    private val context: ApplicationContext
-) : Converter<String, Device> {
+@Configuration
+@EnableConfigurationProperties(MqttDatafill::class)
+class MqttConfig {
 
-    override fun convert(source: String): Device? {
-        return context.getBean(source, Device::class.java)
-    }
+    @Bean
+    fun mqttClient(datafill: MqttDatafill) = MqttClient(datafill.client)
+
+    @Bean
+    @Profile("local")
+    fun mqttBroker(datafill: MqttDatafill) = MqttBroker(datafill.broker)
 
 }
