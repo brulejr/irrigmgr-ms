@@ -24,6 +24,7 @@
 package io.jrb.labs.irrigmgrms.mqtt
 
 import io.jrb.labs.irrigmgrms.datafill.MqttClientDatafill
+import io.micrometer.core.instrument.util.StringUtils
 import mu.KotlinLogging
 import org.eclipse.paho.client.mqttv3.IMqttClient
 import org.eclipse.paho.client.mqttv3.IMqttMessageListener
@@ -33,6 +34,7 @@ import org.eclipse.paho.client.mqttv3.MqttMessage
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence
 import org.springframework.context.SmartLifecycle
 import java.lang.String.format
+import java.util.Optional
 import java.util.UUID
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -51,7 +53,7 @@ class MqttClient(private val datafill: MqttClientDatafill) : SmartLifecycle {
     }
 
     override fun start() {
-        log.info("Starting MqttConsumer on {}", datafill)
+        log.info("MqttClient - STARTING, datafill={}", datafill)
 
         val url = format(urlPattern, datafill.host, datafill.port)
         val publisherId = UUID.randomUUID().toString()
@@ -61,20 +63,22 @@ class MqttClient(private val datafill: MqttClientDatafill) : SmartLifecycle {
         options.isAutomaticReconnect = true
         options.isCleanSession = true
         options.connectionTimeout = datafill.connectionTimeout
+        if (StringUtils.isNotBlank(datafill.username)) options.userName = datafill.username
+        if (StringUtils.isNotBlank(datafill.password)) options.password = datafill.password?.toCharArray()
         mqttClient!!.connect(options)
 
-        log.info("MqttConsumer STARTED")
+        log.info("MqttClient - STARTED")
 
         running.set(true)
     }
 
     override fun stop() {
-        log.info("Stopping MqttConsumer")
+        log.info("MqttClient - STOPPING")
 
         mqttClient!!.disconnect()
         mqttClient = null
 
-        log.info("MqttConsumer STOPPED")
+        log.info("MqttClient - STOPPED")
 
         running.set(false)
     }

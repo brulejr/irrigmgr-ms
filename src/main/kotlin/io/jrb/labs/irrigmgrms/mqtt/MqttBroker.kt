@@ -43,22 +43,22 @@ class MqttBroker(private val datafill: MqttBrokerDatafill) : SmartLifecycle {
     }
 
     override fun start() {
-        log.info("Starting MqttBroker on {}", datafill)
+        log.info("MqttBroker - STARTING, datafill={}", datafill)
 
         val config = mqttConfig()
         brokerService = Server()
         brokerService!!.startServer(config)
 
-        log.info("MqttBroker STARTED")
+        log.info("MqttBroker - STARTED")
         running.set(true)
     }
 
     override fun stop() {
-        log.info("Stopping MqttBroker")
+        log.info("MqttBroker - STOPPING")
 
         brokerService!!.stopServer();
 
-        log.info("MqttBroker STOPPED")
+        log.info("MqttBroker - STOPPED")
         running.set(false)
     }
 

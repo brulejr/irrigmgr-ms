@@ -40,6 +40,6 @@ class MqttConfig {
 
     @Bean
     @Profile("local")
-    fun mqttBroker(datafill: MqttDatafill) = MqttBroker(datafill.broker)
+    fun mqttBroker(datafill: MqttDatafill) = MqttBroker(datafill.broker!!)
 
 }

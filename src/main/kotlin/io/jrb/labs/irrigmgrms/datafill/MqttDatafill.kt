@@ -29,7 +29,7 @@ import org.springframework.boot.context.properties.ConstructorBinding
 @ConstructorBinding
 @ConfigurationProperties(prefix = "mqtt")
 data class MqttDatafill(
-    val broker: MqttBrokerDatafill,
+    val broker: MqttBrokerDatafill?,
     val client: MqttClientDatafill
 )
 
@@ -42,5 +42,7 @@ data class MqttBrokerDatafill(
 data class MqttClientDatafill(
     val host: String,
     val port: Int,
+    val username: String?,
+    val password: String?,
     val connectionTimeout: Int = 10
 )

@@ -50,7 +50,7 @@ class SchedulingService(
     private var jobsMap = mutableMapOf<String, ScheduledFuture<*>>()
 
     override fun start() {
-        log.info("Starting SchedulingService")
+        log.info("SchedulingService - STARTING, datafill={}", datafill)
         jobsMap = mutableMapOf()
         datafill.schedules.forEach { schedule ->
             schedule.events.forEach { event ->
@@ -61,16 +61,18 @@ class SchedulingService(
                 }
             }
         }
+        log.info("SchedulingService - STARTED")
         running.set(true)
     }
 
     override fun stop() {
-        log.info("Stopping SchedulingService")
+        log.info("SchedulingService - STOPPING")
         jobsMap.forEach { (taskName, scheduledTask) ->
             log.info("Cancelling Task - $taskName")
             scheduledTask.cancel(true)
         }
         jobsMap.clear()
+        log.info("SchedulingService - STOPPED")
         running.set(false)
     }
 

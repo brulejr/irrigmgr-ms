@@ -5,3 +5,5 @@ mqtt:
   client:
     host: localhost
     port: 1883
+    username:
+    password:
