@@ -32,7 +32,7 @@ data class ScheduleEvent(
     val timestamp: LocalTime?,
     val fixedRate: Long?,
     val scheduledDays: EnumSet<DayOfWeek> = EnumSet.noneOf(DayOfWeek::class.java),
-    val command: Command,
+    val command: Command<Device>,
     val devices: List<Device> = listOf()
 ) {
 

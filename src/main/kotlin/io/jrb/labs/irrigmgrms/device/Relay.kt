@@ -23,8 +23,11 @@
  */
 package io.jrb.labs.irrigmgrms.device
 
-import io.jrb.labs.irrigmgrms.model.Device
+import io.jrb.labs.irrigmgrms.model.MqttDevice
 
 data class Relay(
-    override val name: String
-) : Device
+    override val name: String,
+    override val commandTopic: String,
+    override val onMessage: String = "ON",
+    override val offMessage: String = "OFF"
+) : MqttDevice

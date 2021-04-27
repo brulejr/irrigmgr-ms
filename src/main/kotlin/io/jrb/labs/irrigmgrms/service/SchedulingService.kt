@@ -107,7 +107,7 @@ class SchedulingService(
         }
     }
 
-    private fun runCommand(command: Command, device: Device): Runnable {
+    private fun runCommand(command: Command<Device>, device: Device): Runnable {
         return Runnable {
             command.run(device)
         }

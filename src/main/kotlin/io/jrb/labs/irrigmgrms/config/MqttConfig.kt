@@ -39,7 +39,7 @@ class MqttConfig {
     fun mqttClient(datafill: MqttDatafill) = MqttClient(datafill.client)
 
     @Bean
-    @Profile("local")
+    @Profile("prod")
     fun mqttBroker(datafill: MqttDatafill) = MqttBroker(datafill.broker!!)
 
 }

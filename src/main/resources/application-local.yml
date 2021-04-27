@@ -1,9 +1,6 @@
 mqtt:
-  broker:
-    host: 0.0.0.0
-    port: 1883
   client:
-    host: localhost
+    host: mqtt.brulenet.org
     port: 1883
-    username:
-    password:
+    username: pi
+    password: J8n@ut0!7

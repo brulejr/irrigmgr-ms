@@ -25,17 +25,21 @@ package io.jrb.labs.irrigmgrms.command
 
 import io.jrb.labs.irrigmgrms.model.Command
 import io.jrb.labs.irrigmgrms.model.CommandResponse
-import io.jrb.labs.irrigmgrms.model.Device
+import io.jrb.labs.irrigmgrms.model.MqttDevice
+import io.jrb.labs.irrigmgrms.mqtt.MqttClient
 import mu.KotlinLogging
+import org.eclipse.paho.client.mqttv3.MqttMessage
 import org.springframework.stereotype.Component
 
 @Component
-class TurnOnCommand() : Command {
+class TurnOnCommand(private val mqttClient: MqttClient) : Command<MqttDevice> {
 
     private val log = KotlinLogging.logger {}
 
-    override fun run(device: Device): CommandResponse {
-        log.info("Turning on - ${device.name}")
+    override fun run(device: MqttDevice): CommandResponse {
+        log.info("Turning device on - device=${device.name}, commandTopic=${device.commandTopic}")
+        val message = MqttMessage(device.onMessage.toByteArray())
+        mqttClient.publish(device.commandTopic, message)
         return CommandResponse()
     }
 

@@ -30,7 +30,7 @@ import mu.KotlinLogging
 import org.springframework.stereotype.Component
 
 @Component
-class MeasureCommand() : Command {
+class MeasureCommand() : Command<Device> {
 
     private val log = KotlinLogging.logger {}
 

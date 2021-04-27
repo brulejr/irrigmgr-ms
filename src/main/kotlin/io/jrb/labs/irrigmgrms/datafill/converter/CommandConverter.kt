@@ -24,6 +24,7 @@
 package io.jrb.labs.irrigmgrms.datafill.converter
 
 import io.jrb.labs.irrigmgrms.model.Command
+import io.jrb.labs.irrigmgrms.model.Device
 import org.springframework.boot.context.properties.ConfigurationPropertiesBinding
 import org.springframework.context.ApplicationContext
 import org.springframework.core.convert.converter.Converter
@@ -33,10 +34,11 @@ import org.springframework.stereotype.Component
 @ConfigurationPropertiesBinding
 class CommandConverter(
     private val context: ApplicationContext
-) : Converter<String, Command> {
+) : Converter<String, Command<Device>> {
 
-    override fun convert(source: String): Command? {
-        return context.getBean(source, Command::class.java)
+    override fun convert(source: String): Command<Device>? {
+        val command = context.getBean(source, Command::class.java)
+        return command as Command<Device>
     }
 
 }

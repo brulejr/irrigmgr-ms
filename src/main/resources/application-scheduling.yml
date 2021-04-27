@@ -3,13 +3,13 @@ scheduling:
     - name: schedule_a
       events:
         - name: "ON"
-          timestamp: "18:35:00"
+          timestamp: "12:26:00"
           command: turnOnCommand
           devices:
             - relayA
             - relayB
         - name: "OFF"
-          timestamp: "18:40:00"
+          timestamp: "12:27:00"
           command: turnOffCommand
           devices:
             - relayA

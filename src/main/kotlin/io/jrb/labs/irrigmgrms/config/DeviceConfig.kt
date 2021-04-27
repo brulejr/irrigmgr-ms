@@ -25,17 +25,29 @@ package io.jrb.labs.irrigmgrms.config
 
 import io.jrb.labs.irrigmgrms.device.Relay
 import io.jrb.labs.irrigmgrms.device.Sensor
+import io.jrb.labs.irrigmgrms.mqtt.MqttClient
+import mu.KotlinLogging
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
 @Configuration
 class DeviceConfig {
 
-    @Bean
-    fun relayA() = Relay("RelayA")
+    private val log = KotlinLogging.logger {}
 
     @Bean
-    fun relayB() = Relay("RelayB")
+    fun relayA(mqttClient: MqttClient): Relay {
+        return Relay(
+            name = "relayA",
+            commandTopic = "irrigation_valves/switch/irrigation_valves_relay_1/command"
+        )
+    }
+
+    @Bean
+    fun relayB(mqttClient: MqttClient) = Relay(
+        name = "relayB",
+        commandTopic = "irrigation_valves/switch/irrigation_valves_relay_2/command"
+    )
 
     @Bean
     fun sensor() = Sensor( "Sensor1")
